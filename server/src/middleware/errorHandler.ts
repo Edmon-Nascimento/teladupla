@@ -1,7 +1,7 @@
-import type { Request, Response, NextFunction } from "express";
+import type { Request, Response } from "express";
 
 export class AppError extends Error {
-  override statusCode: number;
+  statusCode: number;
 
   constructor(statusCode: number, message: string) {
     super(message);

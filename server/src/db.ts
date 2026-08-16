@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import type { Movie } from "./types";
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
