@@ -44,6 +44,17 @@ export async function getTrendingMovies(): Promise<Movie[]> {
   return data.data || [];
 }
 
+export async function getTrendingSeries(): Promise<Movie[]> {
+  const response = await fetch(`${API_BASE_URL}/api/tmdb/trending-series`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch trending series");
+  }
+
+  const data = (await response.json()) as ApiResponse<Movie[]>;
+  return data.data || [];
+}
+
 export async function getMovieDetails(id: number): Promise<Movie> {
   const response = await fetch(`${API_BASE_URL}/api/tmdb/movie/${id}`);
 

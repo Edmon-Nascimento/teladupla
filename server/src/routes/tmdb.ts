@@ -10,19 +10,29 @@ const TMDB_API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
 
 interface TMDBMovie {
   id: number;
-  title: string;
+  title?: string;
+  name?: string;
   overview: string;
   poster_path: string;
-  release_date: string;
+  release_date?: string;
+  first_air_date?: string;
   vote_average: number;
-  genres: Array<{ name: string }>;
+  genres?: Array<{ name: string }>;
   media_type?: string;
+  [key: string]: unknown;
 }
 
 interface TMDBResponse {
   results: TMDBMovie[];
   total_results: number;
   page: number;
+}
+
+function normalizeTitle(item: TMDBMovie): TMDBMovie {
+  return {
+    ...item,
+    title: (item.title || item.name) as string,
+  };
 }
 
 // Search movies
@@ -43,9 +53,11 @@ router.get("/search", async (req: Request, res: Response) => {
 
     res.json({
       success: true,
-      data: data.results.filter(
-        (r: TMDBMovie) => r.media_type === "movie" || r.media_type === "tv"
-      ),
+      data: data.results
+        .filter(
+          (r: TMDBMovie) => r.media_type === "movie" || r.media_type === "tv"
+        )
+        .map(normalizeTitle),
     });
   } catch {
     res.status(500).json({
@@ -66,7 +78,7 @@ router.get("/popular", async (req: Request, res: Response) => {
 
     res.json({
       success: true,
-      data: data.results,
+      data: data.results.map(normalizeTitle),
       total: data.total_results,
       page: data.page,
     });
@@ -87,12 +99,31 @@ router.get("/trending", async (req: Request, res: Response) => {
 
     res.json({
       success: true,
-      data: data.results,
+      data: data.results.map(normalizeTitle),
     });
   } catch {
     res.status(500).json({
       success: false,
       error: "Failed to fetch trending",
+    });
+  }
+});
+
+// Get trending series
+router.get("/trending-series", async (req: Request, res: Response) => {
+  try {
+    const url = `${TMDB_BASE_URL}/trending/tv/week?api_key=${TMDB_API_KEY}&language=pt-BR`;
+    const response = await fetch(url);
+    const data = (await response.json()) as TMDBResponse;
+
+    res.json({
+      success: true,
+      data: data.results.map(normalizeTitle),
+    });
+  } catch {
+    res.status(500).json({
+      success: false,
+      error: "Failed to fetch trending series",
     });
   }
 });
@@ -106,23 +137,22 @@ router.get("/movie/:id", async (req: Request, res: Response) => {
     const response = await fetch(url);
     const data = (await response.json()) as TMDBMovie;
 
-    // Salvar no banco se não existir
     if (response.ok) {
       const movieData: Movie = {
         id: data.id,
-        title: data.title,
+        title: data.title || data.name || "",
         overview: data.overview,
         posterPath: data.poster_path,
-        releaseDate: data.release_date,
+        releaseDate: data.release_date || data.first_air_date,
         rating: data.vote_average,
-        genres: data.genres.map((g) => g.name),
+        genres: data.genres?.map((g) => g.name) || [],
       };
       await createOrUpdateMovie(movieData);
     }
 
     res.json({
       success: true,
-      data,
+      data: normalizeTitle(data),
     });
   } catch {
     res.status(500).json({
