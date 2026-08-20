@@ -1,0 +1,3 @@
+server/
+prisma.config.ts
+docker-compose.yml
