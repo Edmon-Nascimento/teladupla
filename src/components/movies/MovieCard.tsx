@@ -1,5 +1,6 @@
 import type { Movie } from "@/types";
 import Link from "next/link";
+import Image from "next/image";
 
 interface MovieCardProps {
   movie: Movie;
@@ -11,12 +12,16 @@ export default function MovieCard({ movie }: MovieCardProps) {
     : "/placeholder.png";
 
   return (
-    <Link href={`/movie/${movie.id}`}>
+    <Link
+      href={`/movie/${movie.id}${movie.mediaType === "tv" ? "?type=tv" : ""}`}
+    >
       <div className="group cursor-pointer">
         <div className="relative overflow-hidden rounded-lg mb-2">
-          <img
+          <Image
             src={imageUrl}
             alt={`Poster de ${movie.title}`}
+            width={300}
+            height={450}
             className="w-full h-auto group-hover:opacity-80 transition-opacity"
             loading="lazy"
           />

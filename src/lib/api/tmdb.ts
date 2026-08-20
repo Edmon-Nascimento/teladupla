@@ -55,9 +55,12 @@ export async function getTrendingSeries(): Promise<Movie[]> {
   return data.data || [];
 }
 
-export async function getMovieDetails(id: number): Promise<Movie> {
+export async function getMovieDetails(
+  id: number,
+  mediaType: "movie" | "tv" = "movie"
+): Promise<Movie> {
   const response = await fetch(
-    `${API_BASE_URL}/api/tmdb/movie/${id}`
+    `${API_BASE_URL}/api/tmdb/movie/${id}?type=${mediaType}`
   );
 
   if (!response.ok) {

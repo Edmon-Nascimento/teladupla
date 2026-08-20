@@ -29,10 +29,26 @@ interface TMDBResponse {
   page: number;
 }
 
-function normalizeTitle(item: TMDBMovie): TMDBMovie {
+type NormalizedTMDBMovie = Omit<TMDBMovie, "genres"> & {
+  posterPath?: string;
+  mediaType?: "movie" | "tv";
+  releaseDate?: string;
+  rating?: number;
+  genres: string[];
+};
+
+function normalizeTitle(
+  item: TMDBMovie,
+  mediaType?: "movie" | "tv",
+): NormalizedTMDBMovie {
   return {
     ...item,
     title: (item.title || item.name) as string,
+    posterPath: item.poster_path,
+    mediaType: mediaType || (item.media_type as "movie" | "tv" | undefined),
+    releaseDate: item.release_date || item.first_air_date,
+    rating: item.vote_average,
+    genres: item.genres?.map((genre) => genre.name) || [],
   };
 }
 
@@ -58,7 +74,7 @@ router.get("/search", async (req: Request, res: Response) => {
         .filter(
           (r: TMDBMovie) => r.media_type === "movie" || r.media_type === "tv",
         )
-        .map(normalizeTitle),
+        .map((item) => normalizeTitle(item)),
     });
   } catch {
     res.status(500).json({
@@ -79,7 +95,7 @@ router.get("/popular", async (req: Request, res: Response) => {
 
     res.json({
       success: true,
-      data: data.results.map(normalizeTitle),
+      data: data.results.map((item) => normalizeTitle(item)),
       total: data.total_results,
       page: data.page,
     });
@@ -100,7 +116,7 @@ router.get("/trending", async (req: Request, res: Response) => {
 
     res.json({
       success: true,
-      data: data.results.map(normalizeTitle),
+      data: data.results.map((item) => normalizeTitle(item)),
     });
   } catch {
     res.status(500).json({
@@ -119,7 +135,7 @@ router.get("/trending-series", async (req: Request, res: Response) => {
 
     res.json({
       success: true,
-      data: data.results.map(normalizeTitle),
+      data: data.results.map((item) => normalizeTitle(item, "tv")),
     });
   } catch {
     res.status(500).json({
@@ -133,27 +149,40 @@ router.get("/trending-series", async (req: Request, res: Response) => {
 router.get("/movie/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    const mediaType = req.query.type === "tv" ? "tv" : "movie";
 
-    const url = `${TMDB_BASE_URL}/movie/${id}?api_key=${TMDB_API_KEY}&language=pt-BR`;
+    const url = `${TMDB_BASE_URL}/${mediaType}/${id}?api_key=${TMDB_API_KEY}&language=pt-BR`;
     const response = await fetch(url);
     const data = (await response.json()) as TMDBMovie;
 
-    if (response.ok) {
-      const movieData: Movie = {
-        id: data.id,
-        title: data.title || data.name || "",
-        overview: data.overview,
-        posterPath: data.poster_path, // Aqui tá certo?
-        releaseDate: data.release_date || data.first_air_date,
-        rating: data.vote_average,
-        genres: data.genres?.map((g) => g.name) || [],
-      };
-      await createOrUpdateMovie(movieData);
+    if (!response.ok) {
+      return res.status(response.status).json({
+        success: false,
+        error: "Movie not found on TMDB",
+      });
+    }
+
+    const movie = normalizeTitle(data, mediaType);
+
+    if (process.env.DATABASE_URL) {
+      try {
+        await createOrUpdateMovie({
+          id: movie.id,
+          title: movie.title,
+          overview: movie.overview,
+          posterPath: movie.posterPath,
+          releaseDate: movie.releaseDate,
+          rating: movie.rating,
+          genres: movie.genres,
+        } as Movie);
+      } catch (error) {
+        console.error("Failed to save movie details:", error);
+      }
     }
 
     res.json({
       success: true,
-      data: normalizeTitle(data),
+      data: movie,
     });
   } catch {
     res.status(500).json({

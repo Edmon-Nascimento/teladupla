@@ -5,12 +5,21 @@ interface MoviePageProps {
   params: Promise<{
     id: string;
   }>;
+  searchParams: Promise<{
+    type?: string;
+  }>;
 }
 
-export default async function MoviePage({ params }: MoviePageProps) {
+export default async function MoviePage({ params, searchParams }: MoviePageProps) {
   const { id } = await params;
+  const { type } = await searchParams;
   const movieId = parseInt(id);
-  const movie = await getMovieDetails(movieId);
+  const mediaType = type === "tv" ? "tv" : "movie";
+  const movie = await getMovieDetails(movieId, mediaType);
+
+  const imageUrl = movie.posterPath
+    ? `https://image.tmdb.org/t/p/w300${movie.posterPath}`
+    : "/placeholder.png";
 
   return (
     <main className="min-h-screen bg-background p-8">
@@ -18,7 +27,7 @@ export default async function MoviePage({ params }: MoviePageProps) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="md:col-span-1">
             <Image
-              src={`https://image.tmdb.org/t/p/w300${movie.posterPath}`}
+              src={imageUrl}
               alt={`Poster de ${movie.title}`}
               width={300}
               height={450}
