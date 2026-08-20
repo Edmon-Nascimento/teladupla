@@ -56,7 +56,9 @@ export async function getTrendingSeries(): Promise<Movie[]> {
 }
 
 export async function getMovieDetails(id: number): Promise<Movie> {
-  const response = await fetch(`${API_BASE_URL}/api/tmdb/movie/${id}`);
+  const response = await fetch(
+    `${API_BASE_URL}/api/tmdb/movie/${id}`
+  );
 
   if (!response.ok) {
     throw new Error("Failed to fetch movie details");

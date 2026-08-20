@@ -5,7 +5,8 @@ import type { Movie } from "../types";
 
 const router = Router();
 
-const TMDB_BASE_URL = process.env.TMDB_API_BASE_URL || "https://api.themoviedb.org/3";
+const TMDB_BASE_URL =
+  process.env.TMDB_API_BASE_URL || "https://api.themoviedb.org/3";
 const TMDB_API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
 
 interface TMDBMovie {
@@ -55,7 +56,7 @@ router.get("/search", async (req: Request, res: Response) => {
       success: true,
       data: data.results
         .filter(
-          (r: TMDBMovie) => r.media_type === "movie" || r.media_type === "tv"
+          (r: TMDBMovie) => r.media_type === "movie" || r.media_type === "tv",
         )
         .map(normalizeTitle),
     });
@@ -142,7 +143,7 @@ router.get("/movie/:id", async (req: Request, res: Response) => {
         id: data.id,
         title: data.title || data.name || "",
         overview: data.overview,
-        posterPath: data.poster_path,
+        posterPath: data.poster_path, // Aqui tá certo?
         releaseDate: data.release_date || data.first_air_date,
         rating: data.vote_average,
         genres: data.genres?.map((g) => g.name) || [],
