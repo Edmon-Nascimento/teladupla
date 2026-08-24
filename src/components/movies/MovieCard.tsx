@@ -12,31 +12,24 @@ export default function MovieCard({ movie }: MovieCardProps) {
     : "/placeholder.png";
 
   return (
-    <Link
-      href={`/movie/${movie.id}${movie.mediaType === "tv" ? "?type=tv" : ""}`}
-    >
-      <div className="group cursor-pointer">
-        <div className="relative overflow-hidden rounded-lg mb-2">
-          <Image
-            src={imageUrl}
-            alt={`Poster de ${movie.title}`}
-            width={300}
-            height={450}
-            className="w-full h-auto group-hover:opacity-80 transition-opacity"
-            loading="lazy"
-          />
-        </div>
-        <div className="space-y-1">
-          <h3 className="font-semibold text-sm line-clamp-2 hover:text-blue-400">
-            {movie.title}
-          </h3>
-          {movie.rating && (
-            <p className="text-xs text-gray-400">
-              {movie.rating.toFixed(1)}/10
-            </p>
-          )}
-        </div>
+  <Link
+    href={`/movie/${movie.id}${movie.mediaType === "tv" ? "?type=tv" : ""}`}
+    className="group block"
+  >
+    <article>
+      <div className="relative aspect-2/3 overflow-hidden rounded-xl bg-slate-900">
+        <Image
+          src={imageUrl}
+          alt={`Poster de ${movie.title}`}
+          fill
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
+          className="object-cover transition duration-300 group-hover:scale-105"
+        />
+
+        <div className="absolute inset-0 bg-linear-to-t from-slate-950/70 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
       </div>
-    </Link>
-  );
+
+    </article>
+  </Link>
+);
 }
