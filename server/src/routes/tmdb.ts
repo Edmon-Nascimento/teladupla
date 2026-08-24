@@ -110,13 +110,13 @@ router.get("/popular", async (req: Request, res: Response) => {
 // Get trending movies
 router.get("/trending", async (req: Request, res: Response) => {
   try {
-    const url = `${TMDB_BASE_URL}/trending/all/week?api_key=${TMDB_API_KEY}&language=pt-BR`;
+    const url = `${TMDB_BASE_URL}/trending/movie/week?api_key=${TMDB_API_KEY}&language=pt-BR`;
     const response = await fetch(url);
     const data = (await response.json()) as TMDBResponse;
 
     res.json({
       success: true,
-      data: data.results.map((item) => normalizeTitle(item)),
+      data: data.results.map((item) => normalizeTitle(item, "movie")),
     });
   } catch {
     res.status(500).json({
