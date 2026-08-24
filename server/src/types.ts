@@ -9,6 +9,8 @@ export type User = {
 
 export type Movie = {
   id: number;
+  tmdbId: number;
+  mediaType: "movie" | "tv";
   title: string;
   overview?: string;
   posterPath?: string;

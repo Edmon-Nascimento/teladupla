@@ -29,9 +29,14 @@ export async function createUser(data: {
 }
 
 // Movie functions
-export async function createOrUpdateMovie(data: Movie) {
+export async function createOrUpdateMovie(data: Omit<Movie, "id">) {
   return prisma.movie.upsert({
-    where: { id: data.id },
+    where: {
+      tmdbId_mediaType: {
+        tmdbId: data.tmdbId,
+        mediaType: data.mediaType,
+      },
+    },
     update: data,
     create: data,
   });

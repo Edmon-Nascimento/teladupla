@@ -7,33 +7,36 @@ datasource db {
 }
 
 model User {
-  id        String     @id @default(cuid())
-  email     String     @unique
+  id        String   @id @default(cuid())
+  email     String   @unique
   password  String
   name      String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  favorites Favorite[]
-  reviews   Review[]
+  favorites    Favorite[]
+  reviews      Review[]
   watchHistory WatchHistory[]
 
   @@map("users")
 }
 
 model Movie {
-  id        Int     @id
-  title     String
-  overview  String?
-  posterPath String?
+  id          Int      @id @default(autoincrement())
+  tmdbId      Int
+  mediaType   String
+  title       String
+  overview    String?
+  posterPath  String?
   releaseDate String?
-  rating    Float?
-  genres    String[]
+  rating      Float?
+  genres      String[]
 
-  reviews   Review[]
-  favorites Favorite[]
+  reviews      Review[]
+  favorites    Favorite[]
   watchHistory WatchHistory[]
 
+  @@unique([tmdbId, mediaType])
   @@map("movies")
 }
 
@@ -44,11 +47,11 @@ model Review {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  movieId   Int
-  movie     Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  movieId Int
+  movie   Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
 
   @@unique([userId, movieId])
   @@map("reviews")
@@ -58,25 +61,25 @@ model Favorite {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
 
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  movieId   Int
-  movie     Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  movieId Int
+  movie   Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
 
   @@unique([userId, movieId])
   @@map("favorites")
 }
 
 model WatchHistory {
-  id        String   @id @default(cuid())
-  viewedAt  DateTime @default(now())
+  id       String   @id @default(cuid())
+  viewedAt DateTime @default(now())
 
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  movieId   Int
-  movie     Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  movieId Int
+  movie   Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
 
   @@map("watch_history")
 }
