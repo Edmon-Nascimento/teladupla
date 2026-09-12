@@ -5,6 +5,8 @@ import tmdbRouter from "./src/routes/tmdb";
 import { errorHandler } from "./src/middleware/errorHandler";
 import authRouter from "./src/routes/auth";
 import cookieParser from "cookie-parser";
+import type { AuthenticatedRequest } from "./src/middleware/auth";
+import { authMiddleware } from "./src/middleware/auth";
 
 dotenv.config({ path: "../.env.local" });
 
@@ -19,15 +21,30 @@ app.use(
 );
 app.use(express.json());
 app.use(cookieParser());
+app.use("/api/auth", authRouter);
 
 // Health check
 app.get("/health", (req, res) => {
   res.json({ status: "Server is running" });
 });
 
+app.get(
+  "/api/auth/me-test",
+  authMiddleware,
+  (req: AuthenticatedRequest, res) => {
+    res.json({
+      success: true,
+      data: {
+        userId: req.userId,
+        email: req.userEmail,
+      },
+    });
+  },
+);
+
+
 // TMDB routes
 app.use("/api/tmdb", tmdbRouter);
-app.use("/api/auth", authRouter);
 
 // Error handler (deve ser o último middleware)
 app.use(errorHandler);
