@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import tmdbRouter from "./src/routes/tmdb";
 import { errorHandler } from "./src/middleware/errorHandler";
 import authRouter from "./src/routes/auth";
+import cookieParser from "cookie-parser";
 
 dotenv.config({ path: "../.env.local" });
 
@@ -12,6 +13,7 @@ const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 // Health check
 app.get("/health", (req, res) => {
