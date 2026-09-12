@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import tmdbRouter from "./src/routes/tmdb";
 import { errorHandler } from "./src/middleware/errorHandler";
+import authRouter from "./src/routes/auth";
 
 dotenv.config({ path: "../.env.local" });
 
@@ -19,6 +20,7 @@ app.get("/health", (req, res) => {
 
 // TMDB routes
 app.use("/api/tmdb", tmdbRouter);
+app.use("/api/auth", authRouter);
 
 // Error handler (deve ser o último middleware)
 app.use(errorHandler);

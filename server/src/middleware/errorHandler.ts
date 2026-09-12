@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 
 export class AppError extends Error {
   statusCode: number;
@@ -13,7 +13,8 @@ export class AppError extends Error {
 export function errorHandler(
   err: Error,
   _req: Request,
-  res: Response
+  res: Response,
+  _next: NextFunction,
 ) {
   console.error("Error:", err);
 

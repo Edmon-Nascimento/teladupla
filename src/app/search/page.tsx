@@ -47,7 +47,7 @@ function SearchContent() {
 
   return (
     <main className="min-h-screen bg-slate-950 text-white">
-      <div className="mx-auto w-full max-w-[1500px] px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-375 px-4 py-10 sm:px-6 lg:px-8">
         {query && (
           <h1 className="mb-10 text-center text-2xl font-bold sm:text-3xl">
             Resultados para &quot;{query}&quot;
