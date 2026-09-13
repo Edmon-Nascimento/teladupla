@@ -135,4 +135,17 @@ router.get("/me", authMiddleware, async (req: AuthenticatedRequest, res) => {
   });
 });
 
+router.post("/logout", (_req, res) => {
+  res.clearCookie("auth_token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
+
+  return res.status(200).json({
+    success: true,
+    message: "Logout realizado com sucesso.",
+  });
+});
+
 export default router;
