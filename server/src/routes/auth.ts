@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { compare, hash } from "bcryptjs";
 import jwt from "jsonwebtoken";
-
+import { authMiddleware } from "../middleware/auth";
+import type { AuthenticatedRequest } from "../middleware/auth";
 import { createUser, getUserByEmail } from "../db";
 
 const router = Router();
@@ -103,6 +104,33 @@ router.post("/login", async (req, res) => {
         name: user.name,
         email: user.email,
       },
+    },
+  });
+});
+
+router.get("/me", authMiddleware, async (req: AuthenticatedRequest, res) => {
+  if (!req.userId) {
+    return res.status(401).json({
+      success: false,
+      message: "Não autenticado.",
+    });
+  }
+
+  const user = await getUserByEmail(req.userEmail!);
+
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: "Usuário não encontrado.",
+    });
+  }
+
+  return res.status(200).json({
+    success: true,
+    data: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
     },
   });
 });
