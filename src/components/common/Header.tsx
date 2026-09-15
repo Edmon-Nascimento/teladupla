@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Menu } from "lucide-react";
 
@@ -9,7 +9,39 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 export default function Header() {
   const [query, setQuery] = useState("");
+  const [user, setUser] = useState<{
+    id: string;
+    name: string;
+    email: string;
+  } | null>(null);
+
   const router = useRouter();
+
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+
+  useEffect(() => {
+    async function loadUser() {
+      try {
+        const response = await fetch(`${API_URL}/api/auth/me`, {
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          return;
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+          setUser(data.data);
+        }
+      } catch {
+        // Usuário não autenticado ou backend indisponível.
+      }
+    }
+
+    loadUser();
+  }, [API_URL]);
 
   function handleSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -48,6 +80,19 @@ export default function Header() {
             Buscar
           </button>
         </form>
+
+        {user ? (
+          <span className="hidden text-sm text-slate-300 md:block">
+            Olá, {user.name}
+          </span>
+        ) : (
+          <Link
+            href="/login"
+            className="hidden text-sm font-semibold text-slate-200 transition hover:text-cyan-300 md:block"
+          >
+            Entrar
+          </Link>
+        )}
 
         <Sheet>
           <SheetTrigger asChild>
