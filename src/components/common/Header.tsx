@@ -54,6 +54,20 @@ export default function Header() {
 
     router.push(`/search?query=${encodeURIComponent(trimmedQuery)}`);
   }
+
+  async function handleLogout() {
+    try {
+      await fetch(`${API_URL}/api/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+    } finally {
+      setUser(null);
+      router.push("/");
+      router.refresh();
+    }
+  }
+
   return (
     <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/95 text-white backdrop-blur">
       <div className="mx-auto flex h-20 w-full max-w-375 items-center gap-10 px-6 lg:px-10">
@@ -82,9 +96,17 @@ export default function Header() {
         </form>
 
         {user ? (
-          <span className="hidden text-sm text-slate-300 md:block">
-            Olá, {user.name}
-          </span>
+          <div className="hidden items-center gap-4 md:flex">
+            <span className="text-sm text-slate-300">Olá, {user.name}</span>
+
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="text-sm font-semibold text-slate-200 transition hover:text-cyan-300"
+            >
+              Sair
+            </button>
+          </div>
         ) : (
           <Link
             href="/login"
