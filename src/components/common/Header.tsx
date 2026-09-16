@@ -1,47 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useState, useEffect } from "react";
+import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Menu } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 export default function Header() {
   const [query, setQuery] = useState("");
-  const [user, setUser] = useState<{
-    id: string;
-    name: string;
-    email: string;
-  } | null>(null);
+  const { user, refreshUser } = useAuth();
 
   const router = useRouter();
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-
-  useEffect(() => {
-    async function loadUser() {
-      try {
-        const response = await fetch(`${API_URL}/api/auth/me`, {
-          credentials: "include",
-        });
-
-        if (!response.ok) {
-          return;
-        }
-
-        const data = await response.json();
-
-        if (data.success) {
-          setUser(data.data);
-        }
-      } catch {
-        // Usuário não autenticado ou backend indisponível.
-      }
-    }
-
-    loadUser();
-  }, [API_URL]);
 
   function handleSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -61,8 +34,9 @@ export default function Header() {
         method: "POST",
         credentials: "include",
       });
+
+      await refreshUser();
     } finally {
-      setUser(null);
       router.push("/");
       router.refresh();
     }

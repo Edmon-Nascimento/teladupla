@@ -3,11 +3,13 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { refreshUser } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -39,8 +41,9 @@ export default function LoginPage() {
         setError(data.message || "Não foi possível fazer login.");
         return;
       }
-
+      await refreshUser();
       router.push("/");
+      router.refresh();
     } catch {
       setError("Não foi possível conectar ao servidor.");
     } finally {
