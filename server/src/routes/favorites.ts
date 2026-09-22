@@ -4,6 +4,7 @@ import {
   getMovieById,
   getUserFavorites,
   isFavorited,
+  removeFavorite,
 } from "../db";
 import { authMiddleware } from "../middleware/auth";
 import type { AuthenticatedRequest } from "../middleware/auth";
@@ -69,4 +70,47 @@ router.post("/", authMiddleware, async (req: AuthenticatedRequest, res) => {
   });
 });
 
+router.delete(
+  "/:movieId",
+  authMiddleware,
+  async (req: AuthenticatedRequest, res) => {
+    if (!req.userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Não autenticado.",
+      });
+    }
+
+    const movieId = Number(req.params.movieId);
+
+    if (Number.isNaN(movieId)) {
+      return res.status(400).json({
+        success: false,
+        message: "movieId inválido.",
+      });
+    }
+
+    const movie = await getMovieById(movieId);
+
+    if (!movie) {
+      return res.status(404).json({
+        success: false,
+        message: "Filme não encontrado.",
+      });
+    }
+
+    const alreadyFavorited = await isFavorited(req.userId, movieId);
+
+    if (!alreadyFavorited) {
+      return res.status(404).json({
+        success: false,
+        message: "Este filme não está nos favoritos.",
+      });
+    }
+
+    await removeFavorite(req.userId, movieId);
+
+    return res.status(204).send();
+  },
+);
 export default router;
