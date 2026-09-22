@@ -63,7 +63,7 @@ export default function Header() {
 
           <button
             type="submit"
-            className="rounded-lg bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300"
+            className="cursor-pointer rounded-lg bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300"
           >
             Buscar
           </button>
@@ -76,7 +76,7 @@ export default function Header() {
             <button
               type="button"
               onClick={handleLogout}
-              className="text-sm font-semibold text-slate-200 transition hover:text-cyan-300"
+              className="cursor-pointer text-sm font-semibold text-slate-200 transition hover:text-cyan-300"
             >
               Sair
             </button>

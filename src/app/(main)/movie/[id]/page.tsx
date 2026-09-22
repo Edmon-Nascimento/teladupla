@@ -78,7 +78,7 @@ export default async function MoviePage({ params, searchParams }: MoviePageProps
 
             <div className="flex gap-4">
               <FavoriteButton movieId={movie.id} />
-              <button className="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">
+              <button className="cursor-pointer px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">
                 Adicionar Review
               </button>
             </div>
