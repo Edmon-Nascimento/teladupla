@@ -30,7 +30,7 @@ export async function createUser(data: {
 
 // Movie functions
 export async function createOrUpdateMovie(data: Omit<Movie, "id">) {
-  return prisma.movie.upsert({
+  const movie = await prisma.movie.upsert({
     where: {
       tmdbId_mediaType: {
         tmdbId: data.tmdbId,
@@ -40,6 +40,17 @@ export async function createOrUpdateMovie(data: Omit<Movie, "id">) {
     update: data,
     create: data,
   });
+
+  return {
+    id: movie.id,
+    title: movie.title,
+    overview: movie.overview ?? undefined,
+    posterPath: movie.posterPath ?? undefined,
+    mediaType: movie.mediaType as "movie" | "tv",
+    releaseDate: movie.releaseDate ?? undefined,
+    rating: movie.rating ?? undefined,
+    genres: movie.genres,
+  };
 }
 
 export async function getMovieById(id: number) {
@@ -47,11 +58,14 @@ export async function getMovieById(id: number) {
 }
 
 // Review functions
-export async function createReview(userId: string, data: {
-  content: string;
-  rating: number;
-  movieId: number;
-}) {
+export async function createReview(
+  userId: string,
+  data: {
+    content: string;
+    rating: number;
+    movieId: number;
+  },
+) {
   return prisma.review.create({
     data: { ...data, userId },
     include: { user: true, movie: true },

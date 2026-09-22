@@ -166,7 +166,7 @@ router.get("/movie/:id", async (req: Request, res: Response) => {
 
     if (process.env.DATABASE_URL) {
       try {
-        await createOrUpdateMovie({
+        const savedMovie = await createOrUpdateMovie({
           tmdbId: movie.id,
           mediaType,
           title: movie.title,
@@ -176,6 +176,11 @@ router.get("/movie/:id", async (req: Request, res: Response) => {
           rating: movie.rating,
           genres: movie.genres,
         } as Omit<Movie, "id">);
+
+        return res.json({
+          success: true,
+          data: savedMovie,
+        });
       } catch (error) {
         console.error("Failed to save movie details:", error);
       }

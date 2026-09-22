@@ -1,4 +1,5 @@
 import { getMovieDetails } from "@/lib/api/tmdb";
+import { FavoriteButton } from "@/components/movies/FavoriteButton";
 import Image from "next/image";
 
 interface MoviePageProps {
@@ -76,9 +77,7 @@ export default async function MoviePage({ params, searchParams }: MoviePageProps
             </div>
 
             <div className="flex gap-4">
-              <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition">
-                Adicionar aos Favoritos
-              </button>
+              <FavoriteButton movieId={movie.id} />
               <button className="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">
                 Adicionar Review
               </button>
