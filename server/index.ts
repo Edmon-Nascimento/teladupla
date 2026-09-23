@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import type { AuthenticatedRequest } from "./src/middleware/auth";
 import { authMiddleware } from "./src/middleware/auth";
 import favoritesRouter from "./src/routes/favorites";
+import reviewsRouter from "./src/routes/reviews";
 
 dotenv.config({ path: "../.env.local" });
 
@@ -24,6 +25,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use("/api/auth", authRouter);
 app.use("/api/favorites", favoritesRouter);
+app.use("/api/reviews", reviewsRouter);
 
 // Health check
 app.get("/health", (req, res) => {

@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+
 import type { Movie } from "./types";
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
@@ -16,6 +17,7 @@ export const prisma =
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 // User functions
+
 export async function getUserByEmail(email: string) {
   return prisma.user.findUnique({ where: { email } });
 }
@@ -29,6 +31,7 @@ export async function createUser(data: {
 }
 
 // Movie functions
+
 export async function createOrUpdateMovie(data: Omit<Movie, "id">) {
   const movie = await prisma.movie.upsert({
     where: {
@@ -59,6 +62,7 @@ export async function getMovieById(id: number) {
 }
 
 // Review functions
+
 export async function createReview(
   userId: string,
   data: {
@@ -68,20 +72,96 @@ export async function createReview(
   },
 ) {
   return prisma.review.create({
-    data: { ...data, userId },
-    include: { user: true, movie: true },
+    data: {
+      ...data,
+      userId,
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
   });
 }
 
 export async function getReviewsByMovieId(movieId: number) {
   return prisma.review.findMany({
     where: { movieId },
-    include: { user: true },
-    orderBy: { createdAt: "desc" },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 }
 
+export async function updateReview(
+  userId: string,
+  reviewId: string,
+  data: {
+    content: string;
+    rating: number;
+  },
+) {
+  const review = await prisma.review.findFirst({
+    where: {
+      id: reviewId,
+      userId,
+    },
+  });
+
+  if (!review) {
+    return null;
+  }
+
+  return prisma.review.update({
+    where: {
+      id: reviewId,
+    },
+    data,
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  });
+}
+
+export async function deleteReview(userId: string, reviewId: string) {
+  const review = await prisma.review.findFirst({
+    where: {
+      id: reviewId,
+      userId,
+    },
+  });
+
+  if (!review) {
+    return null;
+  }
+
+  await prisma.review.delete({
+    where: {
+      id: reviewId,
+    },
+  });
+
+  return review;
+}
+
 // Favorite functions
+
 export async function addFavorite(userId: string, movieId: number) {
   return prisma.favorite.create({
     data: { userId, movieId },
@@ -109,10 +189,12 @@ export async function isFavorited(userId: string, movieId: number) {
   const fav = await prisma.favorite.findUnique({
     where: { userId_movieId: { userId, movieId } },
   });
+
   return !!fav;
 }
 
 // Watch History functions
+
 export async function addToWatchHistory(userId: string, movieId: number) {
   return prisma.watchHistory.create({
     data: { userId, movieId },

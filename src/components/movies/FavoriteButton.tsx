@@ -86,7 +86,7 @@ export function FavoriteButton({ movieId }: FavoriteButtonProps) {
     <button
       onClick={handleFavorite}
       disabled={loading}
-      className="cursor-pointer rounded-lg bg-blue-600 px-6 py-3 font-semibold transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+      className="cursor-pointer rounded-lg bg-cyan-600 px-6 py-3 font-semibold transition hover:bg-cyan-700 disabled:cursor-not-allowed disabled:opacity-50"
     >
       {loading
         ? "Carregando..."

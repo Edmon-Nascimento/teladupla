@@ -1,5 +1,6 @@
 import { FavoriteButton } from "@/components/movies/FavoriteButton";
 import { getMovieDetails } from "@/lib/api/tmdb";
+import ReviewsSection from "@/components/movies/ReviewsSection";
 import Image from "next/image";
 
 interface MoviePageProps {
@@ -112,24 +113,14 @@ export default async function MoviePage({
               <div className="flex flex-wrap justify-center gap-3 md:justify-start">
                 <FavoriteButton movieId={movie.id} />
 
-                <button className="cursor-pointer rounded-lg bg-white/10 px-6 py-3 font-semibold backdrop-blur-sm transition hover:bg-white/20">
-                  Adicionar Review
-                </button>
+                
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-14 lg:px-8">
-        <h2 className="mb-6 text-center text-3xl font-bold md:text-left">
-          Reviews
-        </h2>
-
-        <div className="rounded-xl border border-white/10 bg-white/5 p-6">
-          <p className="text-gray-400">Nenhum review ainda</p>
-        </div>
-      </section>
+      <ReviewsSection movieId={movie.id} />
     </main>
   );
 }

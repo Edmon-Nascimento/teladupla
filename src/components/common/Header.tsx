@@ -28,6 +28,7 @@ export default function Header() {
     }
 
     router.push(`/search?query=${encodeURIComponent(trimmedQuery)}`);
+    setQuery("");
   }
 
   async function handleLogout() {
