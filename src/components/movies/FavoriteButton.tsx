@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 
 interface FavoriteButtonProps {
-  movieId: number;
+  tmdbId: number;
 }
 
-export function FavoriteButton({ movieId }: FavoriteButtonProps) {
+export function FavoriteButton({ tmdbId }: FavoriteButtonProps) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -24,7 +24,7 @@ export function FavoriteButton({ movieId }: FavoriteButtonProps) {
 
         if (data.success) {
           const favoriteExists = data.data.some(
-            (favorite: { movieId: number }) => favorite.movieId === movieId,
+            (favorite: { tmdbId: number }) => favorite.tmdbId === tmdbId,
           );
 
           setIsFavorite(favoriteExists);
@@ -37,7 +37,7 @@ export function FavoriteButton({ movieId }: FavoriteButtonProps) {
     }
 
     checkFavorite();
-  }, [movieId, apiUrl]);
+  }, [tmdbId, apiUrl]);
 
   async function handleFavorite() {
     setLoading(true);
@@ -45,7 +45,7 @@ export function FavoriteButton({ movieId }: FavoriteButtonProps) {
     try {
       if (isFavorite) {
         const response = await fetch(
-          `${apiUrl}/api/favorites/${movieId}`,
+          `${apiUrl}/api/favorites/${tmdbId}`,
           {
             method: "DELETE",
             credentials: "include",
@@ -65,7 +65,7 @@ export function FavoriteButton({ movieId }: FavoriteButtonProps) {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify({ movieId }),
+        body: JSON.stringify({ tmdbId }),
       });
 
       const data = await response.json();

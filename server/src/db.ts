@@ -46,6 +46,7 @@ export async function createOrUpdateMovie(data: Omit<Movie, "id">) {
 
   return {
     id: movie.id,
+    tmdbId: movie.tmdbId,
     title: movie.title,
     overview: movie.overview ?? undefined,
     posterPath: movie.posterPath ?? undefined,
@@ -59,6 +60,18 @@ export async function createOrUpdateMovie(data: Omit<Movie, "id">) {
 
 export async function getMovieById(id: number) {
   return prisma.movie.findUnique({ where: { id } });
+}
+
+export async function getMovieByTmdbId(
+  tmdbId: number,
+  mediaType?: "movie" | "tv",
+) {
+  return prisma.movie.findFirst({
+    where: {
+      tmdbId,
+      ...(mediaType ? { mediaType } : {}),
+    },
+  });
 }
 
 // Review functions

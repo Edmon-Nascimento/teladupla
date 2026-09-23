@@ -13,7 +13,7 @@ export default function MovieCard({ movie }: MovieCardProps) {
 
   return (
   <Link
-    href={`/movie/${movie.id}${movie.mediaType === "tv" ? "?type=tv" : ""}`}
+    href={`/movie/${movie.tmdbId}${movie.mediaType === "tv" ? "?type=tv" : ""}`}
     className="group block"
   >
     <article>

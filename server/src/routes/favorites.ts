@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   addFavorite,
   getMovieById,
+  getMovieByTmdbId,
   getUserFavorites,
   isFavorited,
   removeFavorite,
@@ -35,16 +36,16 @@ router.post("/", authMiddleware, async (req: AuthenticatedRequest, res) => {
     });
   }
 
-  const { movieId } = req.body;
+  const { tmdbId } = req.body;
 
-  if (!movieId) {
+  if (!Number.isInteger(tmdbId) || tmdbId <= 0) {
     return res.status(400).json({
       success: false,
-      message: "movieId é obrigatório.",
+      message: "tmdbId é obrigatório.",
     });
   }
 
-  const movie = await getMovieById(Number(movieId));
+  const movie = await getMovieByTmdbId(tmdbId);
 
   if (!movie) {
     return res.status(404).json({
@@ -53,7 +54,7 @@ router.post("/", authMiddleware, async (req: AuthenticatedRequest, res) => {
     });
   }
 
-  const alreadyFavorited = await isFavorited(req.userId, Number(movieId));
+  const alreadyFavorited = await isFavorited(req.userId, movie.id);
 
   if (alreadyFavorited) {
     return res.status(409).json({
@@ -62,7 +63,7 @@ router.post("/", authMiddleware, async (req: AuthenticatedRequest, res) => {
     });
   }
 
-  const favorite = await addFavorite(req.userId, Number(movieId));
+  const favorite = await addFavorite(req.userId, movie.id);
 
   return res.status(201).json({
     success: true,
@@ -81,16 +82,16 @@ router.delete(
       });
     }
 
-    const movieId = Number(req.params.movieId);
+    const tmdbId = Number(req.params.movieId);
 
-    if (Number.isNaN(movieId)) {
+    if (!Number.isInteger(tmdbId) || tmdbId <= 0) {
       return res.status(400).json({
         success: false,
-        message: "movieId inválido.",
+        message: "tmdbId inválido.",
       });
     }
 
-    const movie = await getMovieById(movieId);
+    const movie = await getMovieByTmdbId(tmdbId);
 
     if (!movie) {
       return res.status(404).json({
@@ -99,7 +100,7 @@ router.delete(
       });
     }
 
-    const alreadyFavorited = await isFavorited(req.userId, movieId);
+    const alreadyFavorited = await isFavorited(req.userId, movie.id);
 
     if (!alreadyFavorited) {
       return res.status(404).json({
@@ -108,7 +109,7 @@ router.delete(
       });
     }
 
-    await removeFavorite(req.userId, movieId);
+    await removeFavorite(req.userId, movie.id);
 
     return res.status(204).send();
   },

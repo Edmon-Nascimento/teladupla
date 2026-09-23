@@ -79,26 +79,20 @@ export default async function MoviePage({
                 )}
 
                 {movie.mediaType && (
-                  <span>
-                    {movie.mediaType === "tv" ? "Série" : "Filme"}
-                  </span>
+                  <span>{movie.mediaType === "tv" ? "Série" : "Filme"}</span>
                 )}
               </div>
 
               {Array.isArray(movie.genres) && movie.genres.length > 0 && (
                 <div className="mb-7 flex flex-wrap justify-center gap-2 md:justify-start">
-                  {movie.genres.map(
-                    (genre: string | { name: string }) => (
-                      <span
-                        key={
-                          typeof genre === "string" ? genre : genre.name
-                        }
-                        className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-sm text-gray-200 backdrop-blur-sm"
-                      >
-                        {typeof genre === "string" ? genre : genre.name}
-                      </span>
-                    ),
-                  )}
+                  {movie.genres.map((genre: string | { name: string }) => (
+                    <span
+                      key={typeof genre === "string" ? genre : genre.name}
+                      className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-sm text-gray-200 backdrop-blur-sm"
+                    >
+                      {typeof genre === "string" ? genre : genre.name}
+                    </span>
+                  ))}
                 </div>
               )}
 
@@ -111,9 +105,7 @@ export default async function MoviePage({
               </div>
 
               <div className="flex flex-wrap justify-center gap-3 md:justify-start">
-                <FavoriteButton movieId={movie.id} />
-
-                
+                <FavoriteButton tmdbId={movie.tmdbId} />
               </div>
             </div>
           </div>

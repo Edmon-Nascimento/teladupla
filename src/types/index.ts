@@ -22,6 +22,7 @@ export type UserSession = {
 // Tipos de filme
 export type Movie = {
   id: number;
+  tmdbId: number;
   title: string;
   overview?: string;
   posterPath?: string;
