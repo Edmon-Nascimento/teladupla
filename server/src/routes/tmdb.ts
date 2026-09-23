@@ -15,6 +15,7 @@ interface TMDBMovie {
   name?: string;
   overview: string;
   poster_path: string;
+  backdrop_path?: string;
   release_date?: string;
   first_air_date?: string;
   vote_average: number;
@@ -31,6 +32,7 @@ interface TMDBResponse {
 
 type NormalizedTMDBMovie = Omit<TMDBMovie, "genres"> & {
   posterPath?: string;
+  backdropPath?: string;
   mediaType?: "movie" | "tv";
   releaseDate?: string;
   rating?: number;
@@ -45,6 +47,7 @@ function normalizeTitle(
     ...item,
     title: (item.title || item.name) as string,
     posterPath: item.poster_path,
+    backdropPath: item.backdrop_path,
     mediaType: mediaType || (item.media_type as "movie" | "tv" | undefined),
     releaseDate: item.release_date || item.first_air_date,
     rating: item.vote_average,
@@ -172,6 +175,7 @@ router.get("/movie/:id", async (req: Request, res: Response) => {
           title: movie.title,
           overview: movie.overview,
           posterPath: movie.posterPath,
+          backdropPath: movie.backdropPath,
           releaseDate: movie.releaseDate,
           rating: movie.rating,
           genres: movie.genres,

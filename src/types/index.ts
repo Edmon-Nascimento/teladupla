@@ -25,6 +25,7 @@ export type Movie = {
   title: string;
   overview?: string;
   posterPath?: string;
+  backdropPath?: string;
   mediaType?: "movie" | "tv";
   releaseDate?: string;
   rating?: number;

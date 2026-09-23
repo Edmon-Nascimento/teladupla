@@ -46,6 +46,7 @@ export async function createOrUpdateMovie(data: Omit<Movie, "id">) {
     title: movie.title,
     overview: movie.overview ?? undefined,
     posterPath: movie.posterPath ?? undefined,
+    backdropPath: movie.backdropPath ?? undefined,
     mediaType: movie.mediaType as "movie" | "tv",
     releaseDate: movie.releaseDate ?? undefined,
     rating: movie.rating ?? undefined,

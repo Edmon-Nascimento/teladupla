@@ -28,6 +28,7 @@ model Movie {
   title       String
   overview    String?
   posterPath  String?
+  backdropPath String?
   releaseDate String?
   rating      Float?
   genres      String[]
