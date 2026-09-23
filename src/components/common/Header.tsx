@@ -4,17 +4,19 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Menu } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
 
+import { useAuth } from "@/contexts/AuthContext";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 export default function Header() {
   const [query, setQuery] = useState("");
+
   const { user, refreshUser } = useAuth();
 
   const router = useRouter();
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+  const API_URL =
+    process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
   function handleSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -45,7 +47,10 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/95 text-white backdrop-blur">
       <div className="mx-auto flex h-20 w-full max-w-375 items-center gap-10 px-6 lg:px-10">
-        <Link href="/" className="shrink-0 text-2xl font-bold tracking-tight">
+        <Link
+          href="/"
+          className="shrink-0 text-2xl font-bold tracking-tight"
+        >
           tela<span className="text-cyan-300">Dupla</span>
         </Link>
 
@@ -69,9 +74,20 @@ export default function Header() {
           </button>
         </form>
 
+        {user && (
+          <Link
+            href="/favorites"
+            className="hidden text-sm font-semibold text-slate-200 transition hover:text-cyan-300 md:block"
+          >
+            Favoritos
+          </Link>
+        )}
+
         {user ? (
           <div className="hidden items-center gap-4 md:flex">
-            <span className="text-sm text-slate-300">Olá, {user.name}</span>
+            <span className="text-sm text-slate-300">
+              Olá, {user.name}
+            </span>
 
             <button
               type="button"
@@ -108,7 +124,10 @@ export default function Header() {
             <div className="mt-10">
               <h2 className="mb-6 text-xl font-semibold">Buscar</h2>
 
-              <form onSubmit={handleSearch} className="flex flex-col gap-4">
+              <form
+                onSubmit={handleSearch}
+                className="flex flex-col gap-4"
+              >
                 <input
                   type="search"
                   value={query}
@@ -124,6 +143,15 @@ export default function Header() {
                   Buscar
                 </button>
               </form>
+
+              {user && (
+                <Link
+                  href="/favorites"
+                  className="mt-8 block rounded-xl border border-slate-800 px-4 py-3 text-sm font-semibold text-slate-200 transition hover:border-cyan-400 hover:text-cyan-300"
+                >
+                  Favoritos
+                </Link>
+              )}
             </div>
           </SheetContent>
         </Sheet>
