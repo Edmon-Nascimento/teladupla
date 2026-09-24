@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 interface ReviewUser {
   id: string;
@@ -40,8 +41,7 @@ export default function ReviewList({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const apiUrl =
-    process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
   useEffect(() => {
     async function loadReviews() {
@@ -49,9 +49,7 @@ export default function ReviewList({
       setError("");
 
       try {
-        const response = await fetch(
-          `${apiUrl}/api/reviews/movie/${movieId}`,
-        );
+        const response = await fetch(`${apiUrl}/api/reviews/movie/${movieId}`);
 
         if (!response.ok) {
           throw new Error("Não foi possível carregar as reviews.");
@@ -85,20 +83,15 @@ export default function ReviewList({
     }
 
     try {
-      const response = await fetch(
-        `${apiUrl}/api/reviews/${reviewId}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        },
-      );
+      const response = await fetch(`${apiUrl}/api/reviews/${reviewId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
 
       if (!response.ok) {
         const data = await response.json().catch(() => null);
 
-        throw new Error(
-          data?.error || "Não foi possível excluir a review.",
-        );
+        throw new Error(data?.error || "Não foi possível excluir a review.");
       }
 
       setReviews((currentReviews) =>
@@ -133,9 +126,7 @@ export default function ReviewList({
   if (reviews.length === 0) {
     return (
       <div className="rounded-xl border border-white/10 bg-white/5 p-6">
-        <p className="text-gray-400">
-          Nenhuma review ainda.
-        </p>
+        <p className="text-gray-400">Nenhuma review ainda.</p>
       </div>
     );
   }
@@ -152,14 +143,10 @@ export default function ReviewList({
           >
             <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
               <div>
-                <p className="font-semibold text-white">
-                  {review.user.name}
-                </p>
+                <p className="font-semibold text-white">{review.user.name}</p>
 
                 <p className="text-sm text-gray-500">
-                  {new Date(review.createdAt).toLocaleDateString(
-                    "pt-BR",
-                  )}
+                  {new Date(review.createdAt).toLocaleDateString("pt-BR")}
                 </p>
               </div>
 
@@ -168,27 +155,25 @@ export default function ReviewList({
               </span>
             </div>
 
-            <p className="leading-7 text-gray-300">
-              {review.content}
-            </p>
+            <p className="leading-7 text-gray-300">{review.content}</p>
 
             {isOwner && (
               <div className="mt-5 flex gap-3">
-                <button
+                <Button
                   type="button"
                   onClick={() => onEdit(review)}
-                  className="cursor-pointer text-sm font-semibold text-cyan-300 transition hover:text-cyan-200"
+                  variant="ghost"
                 >
                   Editar
-                </button>
+                </Button>
 
-                <button
+                <Button
                   type="button"
                   onClick={() => handleDelete(review.id)}
-                  className="cursor-pointer text-sm font-semibold text-red-400 transition hover:text-red-300"
+                  variant="ghost"
                 >
                   Excluir
-                </button>
+                </Button>
               </div>
             )}
           </article>

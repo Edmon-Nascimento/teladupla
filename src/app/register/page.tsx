@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
@@ -139,14 +140,10 @@ export default function RegisterPage() {
             </p>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="rounded-lg bg-cyan-400 px-4 py-3 font-semibold text-slate-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-50"
-          >
+          <Button type="submit" disabled={loading}>
             {loading ? "Criando conta..." : "Criar conta"}
-          </button>
-          
+          </Button>
+
           <p className="mt-6 text-center text-sm text-slate-400">
             Já tem uma conta?{" "}
             <Link

@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 interface ReviewFormProps {
   movieId: number;
@@ -24,8 +25,7 @@ export default function ReviewForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const apiUrl =
-    process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
   const isEditing = Boolean(reviewId);
 
@@ -130,34 +130,26 @@ export default function ReviewForm({
         />
       </div>
 
-      {error && (
-        <p className="mb-4 text-sm text-red-400">
-          {error}
-        </p>
-      )}
+      {error && <p className="mb-4 text-sm text-red-400">{error}</p>}
 
       <div className="flex flex-wrap gap-3">
-        <button
-          type="submit"
-          disabled={loading}
-          className="cursor-pointer rounded-lg bg-cyan-400 px-5 py-2.5 font-semibold text-slate-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-50"
-        >
+        <Button type="submit" disabled={loading}>
           {loading
             ? "Salvando..."
             : isEditing
               ? "Salvar alterações"
               : "Publicar review"}
-        </button>
+        </Button>
 
         {onCancel && (
-          <button
+          <Button
             type="button"
             onClick={onCancel}
             disabled={loading}
-            className="cursor-pointer rounded-lg bg-white/10 px-5 py-2.5 font-semibold text-white transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-50"
+            variant="outline"
           >
             Cancelar
-          </button>
+          </Button>
         )}
       </div>
     </form>

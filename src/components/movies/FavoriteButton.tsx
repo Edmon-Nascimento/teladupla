@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 interface FavoriteButtonProps {
   tmdbId: number;
@@ -10,8 +11,7 @@ export function FavoriteButton({ tmdbId }: FavoriteButtonProps) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const apiUrl =
-    process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
   useEffect(() => {
     async function checkFavorite() {
@@ -44,13 +44,10 @@ export function FavoriteButton({ tmdbId }: FavoriteButtonProps) {
 
     try {
       if (isFavorite) {
-        const response = await fetch(
-          `${apiUrl}/api/favorites/${tmdbId}`,
-          {
-            method: "DELETE",
-            credentials: "include",
-          },
-        );
+        const response = await fetch(`${apiUrl}/api/favorites/${tmdbId}`, {
+          method: "DELETE",
+          credentials: "include",
+        });
 
         if (response.ok) {
           setIsFavorite(false);
@@ -83,16 +80,12 @@ export function FavoriteButton({ tmdbId }: FavoriteButtonProps) {
   }
 
   return (
-    <button
-      onClick={handleFavorite}
-      disabled={loading}
-      className="cursor-pointer rounded-lg bg-cyan-600 px-6 py-3 font-semibold transition hover:bg-cyan-700 disabled:cursor-not-allowed disabled:opacity-50"
-    >
+    <Button onClick={handleFavorite} disabled={loading}>
       {loading
         ? "Carregando..."
         : isFavorite
           ? "Remover dos favoritos"
           : "Adicionar aos favoritos"}
-    </button>
+    </Button>
   );
 }
