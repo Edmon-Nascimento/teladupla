@@ -1,36 +1,217 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tela Dupla
 
-## Getting Started
+Tela Dupla is a fullstack web application for discovering and managing movies and TV series using data from the TMDB API.
 
-First, run the development server:
+Users can explore trending content, search for movies and TV series, view detailed information, save titles to their favorites, and manage reviews after authentication.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Technologies
+
+### Frontend
+
+* Next.js
+* React
+* TypeScript
+* Tailwind CSS
+* shadcn/ui
+* Lucide React
+
+### Backend
+
+* Node.js
+* Express
+* TypeScript
+* Prisma ORM
+* PostgreSQL
+* Docker
+
+### External APIs
+
+* TMDB API
+
+## Features
+
+* Trending movies
+* Trending TV series
+* Movie and TV series search
+* Movie and TV series details
+* User authentication
+* Favorites
+* Reviews
+* Watch history
+* Responsive interface
+* Desktop and mobile navigation
+
+## Architecture
+
+The project is organized into separate frontend and backend applications:
+
+```text
+Tela Dupla
+├── Frontend
+│   ├── Next.js
+│   ├── React
+│   ├── TypeScript
+│   └── Tailwind CSS
+│
+└── Backend
+    ├── Express
+    ├── Prisma
+    └── PostgreSQL
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The frontend communicates with the application's backend API, while the backend handles authentication, data persistence, database operations, and integration with TMDB.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Prerequisites
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Make sure you have the following installed:
 
-## Learn More
+* Node.js
+* Bun
+* Docker
+* Docker Compose
 
-To learn more about Next.js, take a look at the following resources:
+## Installation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Clone the repository:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+git clone https://github.com/Edmon-Nascimento/teladupla.git
+cd teladupla
+```
 
-## Deploy on Vercel
+Install the dependencies:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+bun install
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Configure the required environment variables according to the project's environment configuration.
+
+Start the PostgreSQL database:
+
+```bash
+docker compose up -d
+```
+
+Run the database migrations:
+
+```bash
+bunx prisma migrate dev
+```
+
+## Development
+
+Start the backend:
+
+```bash
+bun run server
+```
+
+In another terminal, start the frontend:
+
+```bash
+bun run dev
+```
+
+The application will be available at:
+
+```text
+http://localhost:3000
+```
+
+## Database
+
+The project uses PostgreSQL running through Docker.
+
+Prisma is responsible for:
+
+* Database schema management
+* Migrations
+* Database queries
+* Relationships between entities
+
+Check the migration status with:
+
+```bash
+bunx prisma migrate status
+```
+
+## Project Structure
+
+```text
+src/
+├── app/
+│   ├── (main)/
+│   │   ├── favorites/
+│   │   ├── movie/
+│   │   └── search/
+│   ├── login/
+│   └── register/
+│
+├── components/
+│   ├── common/
+│   ├── movies/
+│   └── ui/
+│
+├── contexts/
+├── lib/
+└── types/
+
+server/
+├── src/
+│   ├── db.ts
+│   ├── routes/
+│   └── types.ts
+└── index.ts
+```
+
+## Movie Identifiers
+
+The application distinguishes between the database identifier and the public TMDB identifier.
+
+* `id`: internal database identifier used for relationships between entities.
+* `tmdbId`: public TMDB identifier used for TMDB integration, routes, and favorites.
+
+This separation prevents conflicts between internal application data and external TMDB identifiers.
+
+## Responsive Design
+
+The interface is designed for desktop and mobile devices.
+
+The Header provides desktop navigation and a responsive side menu for smaller screens.
+
+## Validation
+
+Run the frontend TypeScript check:
+
+```bash
+bunx tsc --noEmit
+```
+
+Run the backend TypeScript check:
+
+```bash
+bunx tsc --noEmit -p server/tsconfig.json
+```
+
+Create a production build:
+
+```bash
+bun run build
+```
+
+## Project Status
+
+Tela Dupla is currently in development.
+
+The next stage is deploying the application and configuring the production environment, including:
+
+* Frontend deployment
+* Backend deployment
+* Production PostgreSQL database
+* Environment variables
+* Production API configuration
+
+## License
+
+This project was developed for learning, portfolio, and fullstack web development demonstration purposes.
