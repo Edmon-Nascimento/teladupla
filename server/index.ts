@@ -10,14 +10,14 @@ import { authMiddleware } from "./src/middleware/auth";
 import favoritesRouter from "./src/routes/favorites";
 import reviewsRouter from "./src/routes/reviews";
 
-dotenv.config({ path: "../.env.local" });
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: process.env.FRONTEND_URL,
     credentials: true,
   }),
 );
