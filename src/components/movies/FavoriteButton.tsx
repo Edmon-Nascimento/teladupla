@@ -24,7 +24,8 @@ export function FavoriteButton({ tmdbId }: FavoriteButtonProps) {
 
         if (data.success) {
           const favoriteExists = data.data.some(
-            (favorite: { tmdbId: number }) => favorite.tmdbId === tmdbId,
+            (favorite: { movie: { tmdbId: number } }) =>
+              favorite.movie.tmdbId === tmdbId,
           );
 
           setIsFavorite(favoriteExists);
