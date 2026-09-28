@@ -1,6 +1,8 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import MovieCard from "@/components/movies/MovieCard";
 import type { Movie } from "@/types";
-import { cookies } from "next/headers";
 
 interface Favorite {
   id: string;
@@ -13,30 +15,38 @@ interface FavoritesResponse {
   data: Favorite[];
 }
 
-async function getFavorites(): Promise<Favorite[]> {
+export default function FavoritesPage() {
+  const [favorites, setFavorites] = useState<Favorite[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const apiUrl =
     process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
-  const cookieStore = await cookies();
+  useEffect(() => {
+    async function getFavorites() {
+      try {
+        const response = await fetch(`${apiUrl}/api/favorites`, {
+          credentials: "include",
+        });
 
-  const response = await fetch(`${apiUrl}/api/favorites`, {
-    headers: {
-      Cookie: cookieStore.toString(),
-    },
-    cache: "no-store",
-  });
+        if (!response.ok) {
+          setFavorites([]);
+          return;
+        }
 
-  if (!response.ok) {
-    return [];
-  }
+        const data: FavoritesResponse = await response.json();
 
-  const data: FavoritesResponse = await response.json();
+        setFavorites(data.success ? data.data : []);
+      } catch (error) {
+        console.error(error);
+        setFavorites([]);
+      } finally {
+        setLoading(false);
+      }
+    }
 
-  return data.success ? data.data : [];
-}
-
-export default async function FavoritesPage() {
-  const favorites = await getFavorites();
+    getFavorites();
+  }, [apiUrl]);
 
   return (
     <main className="min-h-screen bg-slate-950 px-6 py-24 text-white">
@@ -45,7 +55,13 @@ export default async function FavoritesPage() {
           Meus favoritos
         </h1>
 
-        {favorites.length === 0 ? (
+        {loading ? (
+          <div className="flex min-h-[300px] items-center justify-center">
+            <p className="text-center text-gray-400">
+              Carregando favoritos...
+            </p>
+          </div>
+        ) : favorites.length === 0 ? (
           <div className="flex min-h-[300px] items-center justify-center">
             <p className="text-center text-gray-400">
               Você ainda não possui filmes ou séries favoritos.
