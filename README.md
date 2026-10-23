@@ -200,18 +200,6 @@ Create a production build:
 bun run build
 ```
 
-## Project Status
-
-Tela Dupla is currently in development.
-
-The next stage is deploying the application and configuring the production environment, including:
-
-* Frontend deployment
-* Backend deployment
-* Production PostgreSQL database
-* Environment variables
-* Production API configuration
-
 ## License
 
 This project was developed for learning, portfolio, and fullstack web development demonstration purposes.
